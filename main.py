@@ -77,48 +77,50 @@ def room_encounter():
 
 def main():
 
-    print("Do you want to enter the dungeon? Yes(y) or No(n).")
-    dung_entry = input()
-    if dung_entry == "y":
-        print("What is your starting equipment?")
-        equip = input("1 = sword and shield, 2 = estoc and dagger, and 3 = magic staff")
-        for equip in range(1, 3):
-            if equip == 1:
-                print("You have equipted the sword and shield.")
-                break
-            elif equip == 2:
-                print("You have equipted the estoc and dagger.")
-                break
-            elif equip == 3:
-                print("You have equipted the magic staff.")
-                break
-            else:
-                print("That is not a valid response, try again.")
-        print("You have entered the first room.")
-        room_encounter()
-        room = input(f"Do you want to continue? Yes(y) or No(n).") # create loop for entering next room.
-        if room == "y":
-            print("You have entered the next room.")
-            room_encounter()
-            room3 = input(f"Do you want to continue? Yes(y) or No(n).")
-            if room3 == "y":
-                print("You have entered the final room.")
+    dung_entry_loop = ()
+    while dung_entry_loop == ():
+        print("Do you want to enter the dungeon? Yes(y) or No(n).")
+        dung_entry = input()
+        if dung_entry == "y":
+            print("What is your starting equipment?")
+            equip = input("1 = sword and shield, 2 = estoc and dagger, and 3 = magic staff")
+            for equip in range(1, 3):
+                if equip == 1:
+                    print("You have equipted the sword and shield.")
+                    break
+                elif equip == 2:
+                    print("You have equipted the estoc and dagger.")
+                    break
+                elif equip == 3:
+                    print("You have equipted the magic staff.")
+                    break
+                else:
+                    print("That is not a valid response, try again.")
+            rooms = random.randint(0, 3) + 3
+            room_num = 1
+            while rooms != 0:
+                print(f"You have entered room {room_num}.")
                 room_encounter()
-            elif room3 == "n":
-                print("You have exited the dungeon.")
-                quit()
-            else:
-                print("That is not a valid response, try again.")
-        elif room == "n":
-            print("You have exited the dungeon.")
+                # if room_encounter() == 1 or 2:
+                    # combat() ## run combat function
+                # elif room_encounter() == 3 or 4:
+                    # reward() ## run reward function
+                room = input(f"Do you want to continue? Yes(y) or No(n).")
+                if room == "y":
+                    rooms -= 1
+                    room_num += 1
+                elif room == "n":
+                    print("You have exited the dungeon.")
+                    quit()
+                else:
+                    print("That is not a valid response, try again.")
+            print("You have reached the end of the dungeon. Thanks for playing!")
+            break
+        elif dung_entry == "n":
+            print("You did not enter the dungeon.")
             quit()
         else:
             print("That is not a valid response, try again.")
-    elif dung_entry == "n":
-        print("You did not enter the dungeon.")
-        quit()
-    else:
-        print("That is not a valid response, try again.")
 
 
 main()
