@@ -4,7 +4,8 @@ import random
 
 
 class Enemy:
-    def __init__(self, health, attack):
+    def __init__(self, name, health, attack):
+        self.name = name
         self.health = health
         self.attack = attack
 
@@ -19,8 +20,8 @@ class Enemy:
             damage = starting_health
 
 
-goblin = Enemy(2, 1)
-bat = Enemy(1, 2)
+goblin = Enemy('goblin', 2, 1)
+bat = Enemy('bat', 1, 2)
 
 
 class Weapon:
@@ -67,12 +68,25 @@ def room_encounter():
         print("You see nothing.")
     return
 
-# def combat():
 
-# def rooms():
-#     rooms = 3
-#     add_room = random.randint(0, 3)
-#     rooms + add_room = rooms
+def combat():
+    while (Weapon.health > 0) and (Enemy.health > 0):
+        print(f"Your health is {Weapon.health}.")
+        print(f"{Enemy.name}'s health is {Enemy.health}.")
+        Enemy.health -= Weapon.attack
+        print(f"Your health is {Weapon.health}.")
+        print(f"{Enemy.name}'s health is {Enemy.health}.")
+        if Enemy.health <= 0:
+            print(f"{Enemy.name} has died.")
+            break
+        Weapon.health -= Enemy.attack
+        print(f"Your health is {Weapon.health}.")
+        print(f"{Enemy.name}'s health is {Enemy.health}.")
+        if Weapon.health <= 0:
+            print("You have died.")
+            break
+
+
 
 
 def main():
