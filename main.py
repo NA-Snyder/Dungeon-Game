@@ -1,6 +1,17 @@
 #!/usr/bin/env python3
 
 import random
+import time
+import sys
+
+
+def delay_print(s):
+    # print one character at a time
+    # https://stackoverflow.com/questions/9246076/how-to-print-one-character-at-a-time-on-one-line
+    for c in s:
+        sys.stdout.write(c)
+        sys.stdout.flush()
+        time.sleep(0.05)
 
 
 class Enemy:
@@ -9,9 +20,7 @@ class Enemy:
         self.health = health
         self.attack = attack
 
-    def take_damage(self):
-        damage = Weapon.attack
-        self.damage -= Weapon.attack
+    def take_damage(self, damage):
         starting_health = self.health
         if starting_health - damage > 0:
             self.health -= damage
@@ -25,16 +34,14 @@ bat = Enemy('bat', 1, 2)
 
 
 class Weapon:
-    def __init__(self, armor, attack):
-        self.armor = armor
+    def __init__(self, health, attack):
+        self.health = health
         self.attack = attack
 
-    def take_damage(self):
-        damage = Enemy.attack
-        self.damage -= Enemy.attack
-        starting_health = self.armor
+    def take_damage(self, damage):
+        starting_health = self.health
         if starting_health - damage > 0:
-            self.armor -= damage
+            self.health -= damage
         else:
             self.health = 0
             damage = starting_health
@@ -50,6 +57,12 @@ class Reward:
         self.gold_pieces = gold_pieces
 
 
+def treasure(chest):
+    total_gold = 0
+    total_gold += chest
+    return total_gold
+
+
 small_chest = Reward(10)
 large_chest = Reward(30)
 
@@ -57,84 +70,95 @@ large_chest = Reward(30)
 def room_encounter():
     encounter = random.randint(1, 5)
     if encounter == 1:
-        print("You see a goblin.")
+        delay_print("You see a goblin.\n")
+        return ("foe", goblin)
     elif encounter == 2:
-        print("You see a bat.")
+        delay_print("You see a bat.\n")
+        return ("foe", bat)
     elif encounter == 3:
-        print("You see a small chest.")
-    elif encounter ==4:
-        print("You see a large chest.")
-    else:
-        print("You see nothing.")
+        delay_print("You see a small chest.\n")
+        return ("reward", small_chest)
+    elif encounter == 4:
+        delay_print("You see a large chest.\n")
+        return ("reward", large_chest)
+    elif encounter == 5:
+        return ("nothing", )
     return
 
 
-def combat():
-    while (Weapon.health > 0) and (Enemy.health > 0):
-        print(f"Your health is {Weapon.health}.")
-        print(f"{Enemy.name}'s health is {Enemy.health}.")
-        Enemy.health -= Weapon.attack
-        print(f"Your health is {Weapon.health}.")
-        print(f"{Enemy.name}'s health is {Enemy.health}.")
-        if Enemy.health <= 0:
-            print(f"{Enemy.name} has died.")
+def combat(weapon, enemy):
+    while (weapon.health > 0) and (enemy.health > 0):
+        delay_print(f"Your health is {weapon.health}.\n")
+        time.sleep(1)
+        delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
+        enemy.health -= weapon.attack
+        delay_print(f"Your health is {weapon.health}.\n")
+        time.sleep(1)
+        delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
+        if enemy.health <= 0:
+            delay_print(f"The {enemy.name} has died.\n")
             break
-        Weapon.health -= Enemy.attack
-        print(f"Your health is {Weapon.health}.")
-        print(f"{Enemy.name}'s health is {Enemy.health}.")
-        if Weapon.health <= 0:
-            print("You have died.")
+        weapon.health -= enemy.attack
+        delay_print(f"Your health is {weapon.health}.\n")
+        time.sleep(1)
+        delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
+        if weapon.health <= 0:
+            delay_print("You have died.\n")
             break
-
-
 
 
 def main():
 
     dung_entry_loop = ()
     while dung_entry_loop == ():
-        print("Do you want to enter the dungeon? Yes(y) or No(n).")
+        delay_print("Do you want to enter the dungeon? Yes(y) or No(n).\n")
         dung_entry = input()
         if dung_entry == "y":
-            print("What is your starting equipment?")
-            equip = input("1 = sword and shield, 2 = estoc and dagger, and 3 = magic staff")
-            for equip in range(1, 3):
+            for x in range(0, 100):
+                delay_print("What is your starting equipment?\n")
+                equip = int(input("1 = sword and shield, 2 = estoc and dagger, and 3 = magic staff\n"))
                 if equip == 1:
-                    print("You have equipted the sword and shield.")
+                    delay_print("You have equipted the sword and shield.\n")
+                    champion = sword_shield
                     break
                 elif equip == 2:
-                    print("You have equipted the estoc and dagger.")
+                    delay_print("You have equipted the estoc and dagger.\n")
+                    champion = estoc_dagger
                     break
                 elif equip == 3:
-                    print("You have equipted the magic staff.")
+                    delay_print("You have equipted the magic staff.\n")
+                    champion = magic_staff
                     break
                 else:
-                    print("That is not a valid response, try again.")
+                    delay_print("That is not a valid response, try again.\n")
+
             rooms = random.randint(0, 3) + 3
             room_num = 1
             while rooms != 0:
-                print(f"You have entered room {room_num}.")
-                room_encounter()
-                # if room_encounter() == 1 or 2:
-                    # combat() ## run combat function
-                # elif room_encounter() == 3 or 4:
-                    # reward() ## run reward function
-                room = input(f"Do you want to continue? Yes(y) or No(n).")
+                delay_print(f"You have entered room {room_num}.\n")
+                room_experience, item = room_encounter()
+                if room_experience == "foe":
+                    combat(champion, item)  # run combat function
+                elif room_experience == "reward":
+                    treasure(item)  # run reward function
+                elif room_experience == "nothing":
+                    delay_print("You see nothing.\n")
+                room = input(f"Do you want to continue? Yes(y) or No(n).\n")
                 if room == "y":
                     rooms -= 1
                     room_num += 1
                 elif room == "n":
-                    print("You have exited the dungeon.")
+                    delay_print("You have exited the dungeon.\n")
                     quit()
                 else:
-                    print("That is not a valid response, try again.")
-            print("You have reached the end of the dungeon. Thanks for playing!")
+                    delay_print("That is not a valid response, try again.\n")
+            delay_print("You have reached the end of the dungeon. Thanks for playing!\n")
             break
         elif dung_entry == "n":
-            print("You did not enter the dungeon.")
+            delay_print("You did not enter the dungeon.\n")
             quit()
         else:
-            print("That is not a valid response, try again.")
+            delay_print("That is not a valid response, try again.\n")
 
 
 main()
