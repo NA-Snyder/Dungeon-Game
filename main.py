@@ -20,31 +20,15 @@ class Enemy:
         self.health = health
         self.attack = attack
 
-    def take_damage(self, damage):
-        starting_health = self.health
-        if starting_health - damage > 0:
-            self.health -= damage
-        else:
-            self.health = 0
-            damage = starting_health
 
-
-goblin = Enemy('goblin', 2, 1)
-bat = Enemy('bat', 1, 2)
+# goblin = Enemy('goblin', 2, 1)
+# bat = Enemy('bat', 1, 2)
 
 
 class Weapon:
     def __init__(self, health, attack):
         self.health = health
         self.attack = attack
-
-    def take_damage(self, damage):
-        starting_health = self.health
-        if starting_health - damage > 0:
-            self.health -= damage
-        else:
-            self.health = 0
-            damage = starting_health
 
 
 sword_shield = Weapon(3, 1)
@@ -59,21 +43,25 @@ class Reward:
 
 def treasure(chest):
     total_gold = 0
-    total_gold += chest
-    return total_gold
+    total_gold += chest.gold_pieces
+    print(f"You have {total_gold} gold pieces.")
+    return
 
 
 small_chest = Reward(10)
 large_chest = Reward(30)
+nothing = "You see nothing.\n"
 
 
 def room_encounter():
     encounter = random.randint(1, 5)
     if encounter == 1:
         delay_print("You see a goblin.\n")
+        goblin = Enemy('goblin', 2, 1)
         return ("foe", goblin)
     elif encounter == 2:
         delay_print("You see a bat.\n")
+        bat = Enemy('bat', 1, 2)
         return ("foe", bat)
     elif encounter == 3:
         delay_print("You see a small chest.\n")
@@ -82,28 +70,30 @@ def room_encounter():
         delay_print("You see a large chest.\n")
         return ("reward", large_chest)
     elif encounter == 5:
-        return ("nothing", )
+        return ("nothing", nothing)
     return
 
 
 def combat(weapon, enemy):
     while (weapon.health > 0) and (enemy.health > 0):
         delay_print(f"Your health is {weapon.health}.\n")
-        time.sleep(1)
+        time.sleep(0.5)
         delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
         enemy.health -= weapon.attack
         delay_print(f"Your health is {weapon.health}.\n")
-        time.sleep(1)
+        time.sleep(0.5)
         delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
         if enemy.health <= 0:
             delay_print(f"The {enemy.name} has died.\n")
             break
         weapon.health -= enemy.attack
         delay_print(f"Your health is {weapon.health}.\n")
-        time.sleep(1)
+        time.sleep(0.5)
         delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
         if weapon.health <= 0:
             delay_print("You have died.\n")
+            delay_print("Game Over.")
+            quit()
             break
 
 
@@ -131,7 +121,6 @@ def main():
                     break
                 else:
                     delay_print("That is not a valid response, try again.\n")
-
             rooms = random.randint(0, 3) + 3
             room_num = 1
             while rooms != 0:
@@ -140,9 +129,9 @@ def main():
                 if room_experience == "foe":
                     combat(champion, item)  # run combat function
                 elif room_experience == "reward":
-                    treasure(item)  # run reward function
+                    treasure(item)  # run treasure function
                 elif room_experience == "nothing":
-                    delay_print("You see nothing.\n")
+                    delay_print(nothing)
                 room = input(f"Do you want to continue? Yes(y) or No(n).\n")
                 if room == "y":
                     rooms -= 1
