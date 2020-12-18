@@ -21,19 +21,21 @@ class Enemy:
         self.attack = attack
 
 
-# goblin = Enemy('goblin', 2, 1)
-# bat = Enemy('bat', 1, 2)
-
-
 class Weapon:
-    def __init__(self, health, attack):
+    def __init__(self, health, attack, total_gold):
         self.health = health
         self.attack = attack
+        self.total_gold = total_gold
+
+    def treasure(self, chest):
+        self.total_gold += chest.gold_pieces
+        delay_print(f"You have {self.total_gold} gold pieces.")
+        return self.total_gold
 
 
-sword_shield = Weapon(3, 1)
-estoc_dagger = Weapon(2, 2)
-magic_staff = Weapon(1, 3)
+sword_shield = Weapon(3, 1, 0)
+estoc_dagger = Weapon(2, 2, 0)
+magic_staff = Weapon(1, 3, 0)
 
 
 class Reward:
@@ -41,15 +43,8 @@ class Reward:
         self.gold_pieces = gold_pieces
 
 
-def treasure(chest):
-    total_gold = 0
-    total_gold += chest.gold_pieces
-    print(f"You have {total_gold} gold pieces.")
-    return
-
-
-small_chest = Reward(10)
-large_chest = Reward(30)
+# small_chest = Reward(10)
+# large_chest = Reward(30)
 nothing = "You see nothing.\n"
 
 
@@ -65,9 +60,11 @@ def room_encounter():
         return ("foe", bat)
     elif encounter == 3:
         delay_print("You see a small chest.\n")
+        small_chest = Reward(10)
         return ("reward", small_chest)
     elif encounter == 4:
         delay_print("You see a large chest.\n")
+        large_chest = Reward(30)
         return ("reward", large_chest)
     elif encounter == 5:
         return ("nothing", nothing)
@@ -77,19 +74,23 @@ def room_encounter():
 def combat(weapon, enemy):
     while (weapon.health > 0) and (enemy.health > 0):
         delay_print(f"Your health is {weapon.health}.\n")
-        time.sleep(0.5)
         delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
+        time.sleep(0.5)
+        delay_print(f"You attack the {enemy.name}.\n")
         enemy.health -= weapon.attack
-        delay_print(f"Your health is {weapon.health}.\n")
+        # delay_print(f"Your health is {weapon.health}.\n")
         time.sleep(0.5)
         delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
         if enemy.health <= 0:
             delay_print(f"The {enemy.name} has died.\n")
             break
-        weapon.health -= enemy.attack
-        delay_print(f"Your health is {weapon.health}.\n")
         time.sleep(0.5)
-        delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
+        delay_print(f"The {enemy.name} attacks you.\n")
+        weapon.health -= enemy.attack
+        # time.sleep(0.5)
+        # delay_print(f"Your health is {weapon.health}.\n")
+        time.sleep(0.5)
+        # delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
         if weapon.health <= 0:
             delay_print("You have died.\n")
             delay_print("Game Over.")
@@ -129,7 +130,7 @@ def main():
                 if room_experience == "foe":
                     combat(champion, item)  # run combat function
                 elif room_experience == "reward":
-                    treasure(item)  # run treasure function
+                    champion.treasure(item)  # run treasure function
                 elif room_experience == "nothing":
                     delay_print(nothing)
                 room = input(f"Do you want to continue? Yes(y) or No(n).\n")
@@ -141,7 +142,8 @@ def main():
                     quit()
                 else:
                     delay_print("That is not a valid response, try again.\n")
-            delay_print("You have reached the end of the dungeon. Thanks for playing!\n")
+            delay_print("You have reached the end of the dungeon.\n")
+            delay_print(f"You have collected {champion.total_gold} gold pieces. Thanks for playing!\n")
             break
         elif dung_entry == "n":
             delay_print("You did not enter the dungeon.\n")
