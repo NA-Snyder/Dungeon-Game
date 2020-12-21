@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
+"""Roguelike game | Author: Nathan Snyder"""
 
+# Imports necessary dependencies.
 import random
 import time
 import sys
 
-"""Printing function that prints one character at a time."""
+
 def delay_print(s):
-    # print one character at a time
+    """Printing function that prints one character at a time."""
     # https://stackoverflow.com/questions/9246076/how-to-print-one-character-at-a-time-on-one-line
     for c in s:
         sys.stdout.write(c)
@@ -14,16 +16,16 @@ def delay_print(s):
         time.sleep(0.05)
 
 
-"""Class that defines attributes to enemies that player character may make contact with."""
 class Enemy:
+    """Class that defines attributes to enemies that player character may make contact with."""
     def __init__(self, name, health, attack):
         self.name = name
         self.health = health
         self.attack = attack
 
 
-"""Class that defines attributes for the player character to select at the beginning of the game."""
 class Vocation:
+    """Class that defines attributes for the player character to select at the beginning of the game."""
     def __init__(self, health, attack, total_gold):
         self.health = health
         self.attack = attack
@@ -40,8 +42,8 @@ strider = Vocation(2, 2, 0)
 mage = Vocation(1, 3, 0)
 
 
-"""Class the assigns attributes to rewards that the player character may make contact with."""
 class Reward:
+    """Class the assigns attributes to rewards that the player character may make contact with."""
     def __init__(self, gold_pieces):
         self.gold_pieces = gold_pieces
 
@@ -49,8 +51,8 @@ class Reward:
 nothing = "You see nothing.\n"
 
 
-"""Function for random room encounters. Also assigns attributes from the classes to the objects."""
 def room_encounter():
+    """Function for random room encounters. Also assigns attributes from the classes to the objects."""
     encounter = random.randint(1, 5)
     if encounter == 1:
         delay_print("You see a goblin.\n")
@@ -73,8 +75,8 @@ def room_encounter():
     return
 
 
-"""Combat function between the player character and an enemy that they come into contact with."""
 def combat(vocation, enemy):
+    """Combat function between the player character and an enemy that they come into contact with."""
     while (vocation.health > 0) and (enemy.health > 0):
         delay_print(f"Your health is {vocation.health}.\n")
         delay_print(f"The {enemy.name}'s health is {enemy.health}.\n")
@@ -98,7 +100,7 @@ def combat(vocation, enemy):
 
 
 def main():
-
+    """Runs game"""
     dung_entry_loop = ()
     while dung_entry_loop == ():
         delay_print("Do you want to enter the dungeon? Yes(y) or No(n).\n")
